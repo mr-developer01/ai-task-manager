@@ -75,13 +75,69 @@ app.get("/api/tasks/:id", (req, res) => {
   });
 });
 
-app.post("api/tasks", (req, res) => {
+app.post("/api/tasks", (req, res) => {
   console.log(req.body);
+
+  const { title, description, priority } = req.body;
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Task title is required.",
+    });
+  }
+
+  const newTask = {
+    id: tasks.length + 1,
+    title: title.trim(),
+    description: description.trim(),
+    status: "PENDING",
+    priority: priority.trim(),
+  };
+
+  tasks.push(newTask);
 
   res.status(201).json({
     success: true,
-    message: "Task created successfully."
-  })
+    message: "Task created successfully.",
+    data: newTask,
+  });
+});
+
+app.patch("/api/tasks/:id", (req, res) => {
+  const taskId = Number(req.params.id);
+  const task = tasks.find((task) => task.id === taskId);
+
+  if (!task) {
+    return res.status(404).json({
+      success: false,
+      message: "Task not found.",
+    });
+  }
+
+  const { title, description, status, priority } = req.body;
+
+  if (title !== undefined) {
+    task.title = title;
+  }
+
+  if (description !== undefined) {
+    task.description = description;
+  }
+
+  if (status !== undefined) {
+    task.status = status;
+  }
+
+  if (priority !== undefined) {
+    task.priority = priority;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Task updated successfully.",
+    data: task,
+  });
 });
 
 app.listen(PORT, () => {
