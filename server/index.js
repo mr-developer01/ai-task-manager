@@ -24,6 +24,8 @@ let tasks = [
   },
 ];
 
+let nextTaskId = 3;
+
 app.get("/", (req, res) => {
   res.send("AI Task Manager backend is running.");
 });
@@ -95,6 +97,8 @@ app.post("/api/tasks", (req, res) => {
     priority: priority.trim(),
   };
 
+  nextTaskId++;
+
   tasks.push(newTask);
 
   res.status(201).json({
@@ -137,6 +141,29 @@ app.patch("/api/tasks/:id", (req, res) => {
     success: true,
     message: "Task updated successfully.",
     data: task,
+  });
+});
+
+app.delete("/api/tasks/:id", (req, res) => {
+  const taskId = Number(req.params.id);
+
+  const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+  if (taskIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Task not found.",
+    });
+  }
+
+  const deletedTask = tasks[taskIndex];
+
+  tasks.splice(taskIndex, 1);
+
+  res.status(200).json({
+    success: true,
+    message: "Task deleted successfully.",
+    data: deletedTask,
   });
 });
 
