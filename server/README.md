@@ -211,3 +211,9 @@ We solve this by separating responsibilities.
     3. Authorization
     4. Validation
     5. Error handling
+
+### The behavior did not change. Only the code organization changed. ###
+
+This is called refactoring.
+
+Refactoring means improving the internal code structure without changing the application’s external behavior.
