@@ -217,3 +217,70 @@ We solve this by separating responsibilities.
 This is called refactoring.
 
 Refactoring means improving the internal code structure without changing the application’s external behavior.
+
+## Module 5: Backend Validation and Error Handling
+
+    -- Centralized error handling
+    -- 404 route handling
+    -- Custom error classes
+    -- Reusable validation
+    -- Valid task statuses
+    -- Valid task priorities
+    -- Invalid ID handling
+    -- Async error handling
+
+    ## When something goes wrong ##
+    Request
+        ↓
+    Validation
+        ↓
+    Error
+        ↓
+    Central error handler
+        ↓
+    Consistent JSON response
+
+    ## What we'll learn ?? ##
+    1. Why backend validation is necessary
+    2. Validation vs error handling
+    3. Validate request bodies
+    4. Validate route parameters
+    5. Validate allowed values
+    6. Create reusable validation middleware
+    7. Create custom application errors
+    8. Create centralized error handling
+    9. Handle unknown routes
+    10. Understand 400, 404, 409, 500
+    11. Handle unexpected errors
+    12. Prepare our backend for asynchronous database operations
+
+    # Validation vs Error Handling
+    -- Validation ( Is the data provided by the client acceptable?? )
+    -- Error Handling ( What should the application do when an error occurs?? )
+
+    3. Our Task rules
+
+    Let's define some rules for our Task Manager.
+    A task must have:
+    1. title
+    --Required
+    --Must be a string
+    --Cannot contain only spaces
+    --Maximum 100 characters
+
+    2.description
+    --Optional
+    --Must be a string
+    --Maximum 500 characters
+
+    3.priority
+    Must be one of:
+    --LOW
+    --MEDIUM
+    --HIGH
+
+    4.status
+    Must be one of:
+    --PENDING
+    --IN_PROGRESS
+    --COMPLETED

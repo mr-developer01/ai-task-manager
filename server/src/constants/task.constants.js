@@ -1,0 +1,3 @@
+export const TASK_PRIORITIES = ["LOW", "MEDIUM", "HIGH"];
+
+export const TASK_STATUSES = ["PENDING", "IN_PROGRESS", "COMPLETED"];

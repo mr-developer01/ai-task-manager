@@ -1,4 +1,4 @@
-import { tasks, getNextTaskId } from "../data/task.data";
+import { tasks, getNextTaskId } from "../data/task.data.js";
 
 export const getAllTasks = (status) => {
   if (status) {
