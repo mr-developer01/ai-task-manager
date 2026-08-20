@@ -483,3 +483,81 @@ Refactoring means improving the internal code structure without changing the app
 
     Note:-- JavaScript has a built-in Error class.
     throw new Error( "Something went wrong" );
+
+## Expected vs unexpected errors ##
+    Expected error
+    -- User requests task 999 -> Task doesn't exist -> 404
+    Unexpected error (500)
+    -- A programming bug occurs
+    -- Database crashes
+    -- Unexpected external API failure
+
+    Important:--
+    Conceptually:
+
+    Expected application error
+            ↓
+    Safe error message
+            ↓
+    Client
+
+    Unexpected error
+            ↓
+    Log detailed error
+            ↓
+    Client receives generic message
+
+## A useful status-code mental model ##
+    2xx
+    ↓
+    Success
+
+    eg:--
+    1. 200 OK
+    Successful read/update/delete.
+    2. 201 Created
+    Successful creation.
+
+    4xx
+    ↓
+    Client/request problem
+
+    eg:-
+    1. 400 Bad Request
+    Client sent invalid data.
+    2. 401 Unauthorized
+    User has not authenticated.
+    3. 403 Forbidden
+    User is authenticated but doesn't have permission.
+    4. 404 Not Found
+    Requested resource doesn't exist.
+    5. 409 Conflict
+    Request conflicts with existing data.
+
+    5xx
+    ↓
+    Server problem
+
+    eg:-
+    500 Internal Server Error
+    Unexpected server problem.
+
+    --- For our application ---
+    200 → Success
+
+    201 → Created
+
+    400 → Invalid input
+
+    401 → Not logged in
+
+    403 → Not allowed
+
+    404 → Not found
+
+    409 → Conflict
+
+    500 → Unexpected server error
+
+
+## Async operations are coming ##

@@ -1,4 +1,5 @@
 import { tasks, getNextTaskId } from "../data/task.data.js";
+import { AppError } from "../utlis/AppError.js";
 
 export const getAllTasks = (status) => {
   if (status) {
@@ -30,7 +31,7 @@ export const updateTask = (taskId, taskData) => {
   const task = getTaskById(taskId);
 
   if (!task) {
-    return undefined;
+    throw new AppError("Task not found", 404);
   }
 
   const { title, description, status, priority } = taskData;

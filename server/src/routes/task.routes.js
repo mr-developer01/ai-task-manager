@@ -9,8 +9,8 @@ import {
 } from "../controllers/task.controller.js";
 import {
   validateCreateTask,
+  validateTaskId,
   validateUpdateTask,
-  validateDeleteTask
 } from "../middleware/task.validation.middleware.js";
 
 const router = express.Router();
@@ -29,12 +29,12 @@ const router = express.Router();
 
 router.get("/", getAllTasks);
 
-router.get("/:id", getTaskById);
+router.get("/:id",validateTaskId, getTaskById);
 
 router.post("/", validateCreateTask, createTask);
 
-router.patch("/:id", validateUpdateTask, updateTask);
+router.patch("/:id",validateTaskId, validateUpdateTask, updateTask);
 
-router.delete("/:id", validateDeleteTask, deleteTask);
+router.delete("/:id",validateTaskId, deleteTask);
 
 export default router;

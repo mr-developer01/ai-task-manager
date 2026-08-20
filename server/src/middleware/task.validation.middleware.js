@@ -1,4 +1,5 @@
-import { TASK_PRIORITIES } from "../constants/task.constants.js";
+import { TASK_PRIORITIES, TASK_STATUSES } from "../constants/task.constants.js";
+import { AppError } from "../utlis/AppError.js";
 
 export const validateCreateTask = (req, res, next) => {
   const { title, description, priority } = req.body;
@@ -60,10 +61,12 @@ export const validateUpdateTask = (req, res, next) => {
   next();
 };
 
-export const validateDeleteTask = (req, res, next) => {
+export const validateTaskId = (req, res, next) => {
   const taskId = Number(req.params.id);
-  if (taskId) {
-    throw new AppError("Task not found.", 400);
+
+  if (!Number.isInteger(taskId) || taskId <= 0) {
+    throw new AppError("Invalid task ID.", 400);
   }
+
   next();
 };
