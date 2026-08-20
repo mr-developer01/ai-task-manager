@@ -284,3 +284,202 @@ Refactoring means improving the internal code structure without changing the app
     --PENDING
     --IN_PROGRESS
     --COMPLETED
+
+## Validate the Create Task request ##
+    --src/controllers/task.controller.js
+    export const createTask = (req, res) => {
+        const {
+            title,
+            description,
+            priority,
+        } = req.body;
+
+        if (!title || typeof title !== "string") {
+            return res.status(400).json({
+            success: false,
+            message: "Task title is required.",
+            });
+        }
+
+        if (!title.trim()) {
+            return res.status(400).json({
+            success: false,
+            message: "Task title cannot be empty.",
+            });
+        }
+
+        if (title.trim().length > 100) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task title cannot exceed 100 characters.",
+            });
+        }
+
+        if (
+            description !== undefined &&
+            typeof description !== "string"
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task description must be a string.",
+            });
+        }
+
+        if (
+            description &&
+            description.length > 500
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task description cannot exceed 500 characters.",
+            });
+        }
+
+        if (
+            priority !== undefined &&
+            !TASK_PRIORITIES.includes(priority)
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Invalid task priority.",
+            });
+        }
+
+        const newTask = createTaskService({
+            title,
+            description,
+            priority,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Task created successfully.",
+            data: newTask,
+        });
+    };
+    -- Too much validation inside the controller
+    createTask()
+    │
+    ├── title validation
+    ├── description validation
+    ├── priority validation
+    ├── create task
+    └── response
+
+    --Imagine we eventually have:--
+    User validation
+    Task validation
+    Subtask validation
+    Login validation
+    AI request validation
+    Supplier validation
+
+    Our controllers will become huge.
+    We need reusable validation middleware.
+
+    -- What is validation middleware?
+    Instead of:
+
+    Request
+        ↓
+    Controller
+    ├── validate
+    ├── validate
+    ├── validate
+    └── business logic
+
+    we want:
+    Request
+        ↓
+    Validation middleware
+        ↓
+    Controller
+        ↓
+    Service
+    The validation middleware handles the validation.
+
+    --src/middleware/task.validation.middleware.js
+        import { TASK_PRIORITIES } from "../constants/task.constants.js";
+
+    export const validateCreateTask = (req,res,next) => {
+        const {title,description,priority,} = req.body;
+
+        if (!title || typeof title !== "string") {
+            return res.status(400).json({
+            success: false,
+            message: "Task title is required.",
+            });
+        }
+
+        if (!title.trim()) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task title cannot be empty.",
+            });
+        }
+
+        if (title.trim().length > 100) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task title cannot exceed 100 characters.",
+            });
+        }
+
+        if (
+            description !== undefined &&
+            typeof description !== "string"
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task description must be a string.",
+            });
+        }
+
+        if (
+            typeof description === "string" &&
+            description.length > 500
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Task description cannot exceed 500 characters.",
+            });
+        }
+
+        if (
+            priority !== undefined &&
+            !TASK_PRIORITIES.includes(priority)
+        ) {
+            return res.status(400).json({
+            success: false,
+            message:
+                "Invalid task priority.",
+            });
+        }
+
+        next();
+    };
+
+## Custom Errors ##
+    -- src/utils/AppError.js
+    export class AppError extends Error {
+        constructor(
+            message,
+            statusCode = 500
+        ) {
+            super(message);
+
+            this.statusCode = statusCode;
+            this.isOperational = true;
+        }
+    }
+
+    Note:-- JavaScript has a built-in Error class.
+    throw new Error( "Something went wrong" );

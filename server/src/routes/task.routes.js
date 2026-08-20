@@ -7,6 +7,11 @@ import {
   updateTask,
   deleteTask,
 } from "../controllers/task.controller.js";
+import {
+  validateCreateTask,
+  validateUpdateTask,
+  validateDeleteTask
+} from "../middleware/task.validation.middleware.js";
 
 const router = express.Router();
 // A router is like a smaller Express application used to group related routes.
@@ -26,10 +31,10 @@ router.get("/", getAllTasks);
 
 router.get("/:id", getTaskById);
 
-router.post("/", createTask);
+router.post("/", validateCreateTask, createTask);
 
-router.patch("/:id", updateTask);
+router.patch("/:id", validateUpdateTask, updateTask);
 
-router.delete("/:id", deleteTask);
+router.delete("/:id", validateDeleteTask, deleteTask);
 
 export default router;

@@ -1,3 +1,4 @@
+import { TASK_PRIORITIES } from "../constants/task.constants.js";
 import {
   getAllTasks as getAllTasksService,
   getTaskById as getTaskByIdService,
@@ -5,6 +6,7 @@ import {
   updateTask as updateTaskService,
   deleteTask as deleteTaskService,
 } from "../services/task.service.js";
+import { AppError } from "../utlis/AppError.js";
 
 export const getAllTasks = (req, res) => {
   const { status } = req.query;
@@ -23,10 +25,7 @@ export const getTaskById = (req, res) => {
   const task = getTaskByIdService(taskId);
 
   if (!task) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found.",
-    });
+    throw new AppError( "Task not found.", 404 );
   }
 
   res.status(200).json({
@@ -37,13 +36,6 @@ export const getTaskById = (req, res) => {
 
 export const createTask = (req, res) => {
   const { title, description, priority } = req.body;
-
-  if (!title || !title.trim()) {
-    return res.status(400).json({
-      success: false,
-      message: "Task title is required.",
-    });
-  }
 
   const newTask = createTaskService({
     title,
@@ -63,13 +55,6 @@ export const updateTask = (req, res) => {
 
   const updatedTask = updateTaskService(taskId, req.body);
 
-  if (!updatedTask) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found.",
-    });
-  }
-
   res.status(200).json({
     success: true,
     message: "Task updated successfully.",
@@ -83,10 +68,7 @@ export const deleteTask = (req, res) => {
   const deletedTask = deleteTaskService(taskId);
 
   if (!deletedTask) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found.",
-    });
+    throw new AppError( "Task not found.", 404 );
   }
 
   res.status(200).json({
